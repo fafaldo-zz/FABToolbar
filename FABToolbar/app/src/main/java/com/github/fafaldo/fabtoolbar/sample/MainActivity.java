@@ -1,4 +1,4 @@
-package com.fafaldo.fabtoolbar.sample;
+package com.github.fafaldo.fabtoolbar.sample;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,7 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.fafaldo.fabtoolbar.widget.FABToolbarLayout;
+import com.github.fafaldo.fabtoolbar.widget.FABToolbarLayout;
+
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private FABToolbarLayout layout;

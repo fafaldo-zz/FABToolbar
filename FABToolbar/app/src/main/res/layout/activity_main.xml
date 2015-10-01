@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.fafaldo.fabtoolbar.widget.FABToolbarLayout
+    <com.github.fafaldo.fabtoolbar.widget.FABToolbarLayout
         android:id="@+id/fabtoolbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-        <com.fafaldo.fabtoolbar.widget.FABContainer
+        <com.github.fafaldo.fabtoolbar.widget.FABContainer
             android:id="@+id/fabtoolbar_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
                 app:fabSize="normal"
                 android:src="@drawable/abc_ic_menu_share_mtrl_alpha"/>
 
-        </com.fafaldo.fabtoolbar.widget.FABContainer>
+        </com.github.fafaldo.fabtoolbar.widget.FABContainer>
 
         <LinearLayout
             android:id="@+id/fabtoolbar_toolbar"
@@ -75,6 +75,6 @@
 
         </LinearLayout>
 
-    </com.fafaldo.fabtoolbar.widget.FABToolbarLayout>
+    </com.github.fafaldo.fabtoolbar.widget.FABToolbarLayout>
 
 </RelativeLayout>

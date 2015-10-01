@@ -1,4 +1,4 @@
-package com.fafaldo.fabtoolbar.util;
+package com.github.fafaldo.fabtoolbar.util;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

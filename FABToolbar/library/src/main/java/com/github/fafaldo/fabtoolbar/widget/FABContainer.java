@@ -1,4 +1,4 @@
-package com.fafaldo.fabtoolbar.widget;
+package com.github.fafaldo.fabtoolbar.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;

@@ -1,4 +1,4 @@
-package com.fafaldo.fabtoolbar;
+package com.github.fafaldo.fabtoolbar;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

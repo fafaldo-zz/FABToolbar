@@ -1,4 +1,4 @@
-package com.fafaldo.fabtoolbar.widget;
+package com.github.fafaldo.fabtoolbar.widget;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -21,8 +21,8 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.fafaldo.fabtoolbar.R;
-import com.fafaldo.fabtoolbar.util.ExpandAnimationUtils;
+import com.github.fafaldo.fabtoolbar.R;
+import com.github.fafaldo.fabtoolbar.util.ExpandAnimationUtils;
 
 import java.util.ArrayList;
 import java.util.List;
