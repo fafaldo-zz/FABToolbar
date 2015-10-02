@@ -1,6 +1,8 @@
 FABToolbar
 ================
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.fafaldo/fab-toolbar/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.fafaldo/fab-toolbar)
+
 An implementation of Google design, with Floating Action Button transforming into toolbar.
 
 ![Illustration of behavior](https://github.com/fafaldo/FABToolbar/blob/master/fabtoolbar.gif "Illustration of behavior")
@@ -17,6 +19,13 @@ Features:
 
 How to use
 ----------
+
+Import dependency using Gradle:
+
+```
+compile 'com.github.fafaldo:fab-toolbar:1.0.1'
+```
+
 
 In order to use FABToolbar you need to implement following view hierarchy in your XML layout file:
 
