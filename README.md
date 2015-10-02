@@ -107,13 +107,13 @@ Parameters:
 You can control these parameters via XML:
 
 ```
-<attr name="showDuration" format="integer"/>      //show animation duration (in ms)
-<attr name="hideDuration" format="integer"/>      //hide animation duration (in ms)
-<attr name="bottomMargin" format="dimension"/>    //FAB bottom margin (in dp)
-<attr name="rightMargin" format="dimension"/>     //FAB right margin (in dp)
-<attr name="fadeInPivotX" format="dimension"/>    //toolbar elements translation animation pivot X (in dp)
-<attr name="fadeInPivotY" format="dimension"/>    //toolbar elements translation animation pivot Y (in dp)
-<attr name="fadeInFraction" format="float"/>      //percent of translation animation, between element position and pivot point
+<attr name="showDuration" format="integer"/>      //show animation duration (in ms), default: 600 ms
+<attr name="hideDuration" format="integer"/>      //hide animation duration (in ms), default: 600 ms
+<attr name="bottomMargin" format="dimension"/>    //FAB bottom margin (in dp), default: 100 px
+<attr name="rightMargin" format="dimension"/>     //FAB right margin (in dp), default: 100 px
+<attr name="fadeInPivotX" format="dimension"/>    //toolbar elements translation animation pivot X (in dp), default: 1/2 toolbar width
+<attr name="fadeInPivotY" format="dimension"/>    //toolbar elements translation animation pivot Y (in dp), default: 1/2 toolbar height
+<attr name="fadeInFraction" format="float"/>      //percent of translation animation, between element position and pivot point (float 0.0-1.0), default: 0.2
 ```
 
 
