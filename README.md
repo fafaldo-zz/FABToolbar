@@ -48,7 +48,7 @@ Remember to assign each element a proper ID.
 Example implementation:
  
 ```xml
-<com.fafaldo.fabtoolbar.widget.FABToolbarLayout
+<com.github.fafaldo.fabtoolbar.widget.FABToolbarLayout
 	android:id="@+id/fabtoolbar"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
@@ -60,7 +60,7 @@ Example implementation:
 
 	...
 	
-	<com.fafaldo.fabtoolbar.widget.FABContainer
+	<com.github.fafaldo.fabtoolbar.widget.FABContainer
 		android:id="@+id/fabtoolbar_container"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
@@ -74,7 +74,7 @@ Example implementation:
 			app:fabSize="normal"
 			android:src="@drawable/abc_ic_menu_share_mtrl_alpha"/>
 
-	</com.fafaldo.fabtoolbar.widget.FABContainer>
+	</com.github.fafaldo.fabtoolbar.widget.FABContainer>
 
 	<LinearLayout
 		android:id="@+id/fabtoolbar_toolbar"
@@ -94,7 +94,7 @@ Example implementation:
 		
 	</LinearLayout>
 
-</com.fafaldo.fabtoolbar.widget.FABToolbarLayout>
+</com.github.fafaldo.fabtoolbar.widget.FABToolbarLayout>
 ```
 
 Toolbar will be automatically opened on FAB click. If you want to do it manually use function
