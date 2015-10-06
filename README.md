@@ -1,7 +1,7 @@
 FABToolbar
 ================
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.fafaldo/fab-toolbar/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.fafaldo/fab-toolbar)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.fafaldo/fab-toolbar/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.fafaldo/fab-toolbar) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-FABToolbar-green.svg?style=flat)](https://android-arsenal.com/details/1/2592)
 
 An implementation of Google design, with Floating Action Button transforming into toolbar.
 
