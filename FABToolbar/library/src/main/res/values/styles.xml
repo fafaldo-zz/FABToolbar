@@ -8,5 +8,8 @@
         <attr name="fadeInPivotX" format="dimension"/>
         <attr name="fadeInPivotY" format="dimension"/>
         <attr name="fadeInFraction" format="float"/>
+        <attr name="fabId" format="reference"/>
+        <attr name="containerId" format="reference"/>
+        <attr name="fabToolbarId" format="reference"/>
     </declare-styleable>
 </resources>

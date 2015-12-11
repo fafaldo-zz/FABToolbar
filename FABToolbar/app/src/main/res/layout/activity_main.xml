@@ -11,7 +11,10 @@
         app:hideDuration="200"
         app:rightMargin="30dp"
         app:bottomMargin="30dp"
-        app:fadeInFraction="0.2">
+        app:fadeInFraction="0.2"
+        app:fabId="@+id/fabtoolbar_fab"
+        app:containerId="@+id/fabtoolbar_container"
+        app:fabToolbarId="@+id/fabtoolbar_toolbar">
 
         <ListView
             android:id="@+id/list"
@@ -19,14 +22,14 @@
             android:layout_height="match_parent"/>
 
         <RelativeLayout
-            android:id="@+id/fabtoolbar_container"
+            android:id="@id/fabtoolbar_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true">
 
             <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fabtoolbar_fab"
+                android:id="@id/fabtoolbar_fab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:fabSize="normal"
@@ -35,7 +38,7 @@
         </RelativeLayout>
 
         <LinearLayout
-            android:id="@+id/fabtoolbar_toolbar"
+            android:id="@id/fabtoolbar_toolbar"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_alignParentBottom="true"

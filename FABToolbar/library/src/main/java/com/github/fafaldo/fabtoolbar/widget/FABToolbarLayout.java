@@ -57,6 +57,10 @@ public class FABToolbarLayout extends RelativeLayout {
     private int pivotY = -1;
     private float fraction = 0.2f;
 
+    private int fabId = -1;
+    private int containerId = -1;
+    private int toolbarId = -1;
+
     private View toolbarLayout;
     private ImageView fab;
     private TransitionDrawable fabDrawable;
@@ -97,6 +101,9 @@ public class FABToolbarLayout extends RelativeLayout {
         pivotX = a.getDimensionPixelSize(R.styleable.FABToolbarLayout_fadeInPivotX, -1);
         pivotY = a.getDimensionPixelSize(R.styleable.FABToolbarLayout_fadeInPivotY, -1);
         fraction = a.getFloat(R.styleable.FABToolbarLayout_fadeInFraction, fraction);
+        fabId = a.getResourceId(R.styleable.FABToolbarLayout_fabId, -1);
+        containerId = a.getResourceId(R.styleable.FABToolbarLayout_containerId, -1);
+        toolbarId = a.getResourceId(R.styleable.FABToolbarLayout_fabToolbarId, -1);
 
         a.recycle();
     }
@@ -110,17 +117,17 @@ public class FABToolbarLayout extends RelativeLayout {
             return;
         }
 
-        toolbarLayout = findViewById(R.id.fabtoolbar_toolbar);
+        toolbarLayout = findViewById(toolbarId);
         if (toolbarLayout == null) {
             throw new IllegalStateException("You have to place a view with id = R.id.fabtoolbar_toolbar inside FABToolbarLayout");
         }
 
-        fabContainer = (RelativeLayout) findViewById(R.id.fabtoolbar_container);
+        fabContainer = (RelativeLayout) findViewById(containerId);
         if (fabContainer == null) {
             throw new IllegalStateException("You have to place a FABContainer view with id = R.id.fabtoolbar_container inside FABToolbarLayout");
         }
 
-        fab = (ImageView) fabContainer.findViewById(R.id.fabtoolbar_fab);
+        fab = (ImageView) fabContainer.findViewById(fabId);
         if (fab == null) {
             throw new IllegalStateException("You have to place a FAB view with id = R.id.fabtoolbar_fab inside FABContainer");
         }
