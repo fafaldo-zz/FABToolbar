@@ -64,6 +64,7 @@ public class FABToolbarLayout extends RelativeLayout {
     private View toolbarLayout;
     private ImageView fab;
     private TransitionDrawable fabDrawable;
+    private Drawable fabNormalDrawable;
     private RelativeLayout fabContainer;
 
     private Point toolbarPos = new Point();
@@ -74,6 +75,8 @@ public class FABToolbarLayout extends RelativeLayout {
     private boolean isFab = true;
     private boolean isToolbar = false;
     private boolean isInit = true;
+
+    private boolean fabDrawableAnimationEnabled = true;
 
     private AnimatorSet hideAnimSet;
 
@@ -104,6 +107,7 @@ public class FABToolbarLayout extends RelativeLayout {
         fabId = a.getResourceId(R.styleable.FABToolbarLayout_fabId, -1);
         containerId = a.getResourceId(R.styleable.FABToolbarLayout_containerId, -1);
         toolbarId = a.getResourceId(R.styleable.FABToolbarLayout_fabToolbarId, -1);
+        fabDrawableAnimationEnabled = a.getBoolean(R.styleable.FABToolbarLayout_fabDrawableAnimationEnabled, true);
 
         a.recycle();
     }
@@ -132,16 +136,21 @@ public class FABToolbarLayout extends RelativeLayout {
             throw new IllegalStateException("You have to place a FAB view with id = R.id.fabtoolbar_fab inside FABContainer");
         }
 
+        fab.setVisibility(INVISIBLE);
+
         Drawable tempDrawable = fab.getDrawable();
-        TransitionDrawable transitionDrawable;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            transitionDrawable = new TransitionDrawable(new Drawable[]{tempDrawable, getResources().getDrawable(R.drawable.empty_drawable, getContext().getTheme())});
-        } else {
-            transitionDrawable = new TransitionDrawable(new Drawable[]{tempDrawable, getResources().getDrawable(R.drawable.empty_drawable)});
+        fabNormalDrawable = tempDrawable;
+        if(fabDrawableAnimationEnabled) {
+            TransitionDrawable transitionDrawable;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                transitionDrawable = new TransitionDrawable(new Drawable[]{tempDrawable, getResources().getDrawable(R.drawable.empty_drawable, getContext().getTheme())});
+            } else {
+                transitionDrawable = new TransitionDrawable(new Drawable[]{tempDrawable, getResources().getDrawable(R.drawable.empty_drawable)});
+            }
+            transitionDrawable.setCrossFadeEnabled(fabDrawableAnimationEnabled);
+            fabDrawable = transitionDrawable;
+            fab.setImageDrawable(transitionDrawable);
         }
-        transitionDrawable.setCrossFadeEnabled(true);
-        fabDrawable = transitionDrawable;
-        fab.setImageDrawable(transitionDrawable);
 
         toolbarLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -169,6 +178,15 @@ public class FABToolbarLayout extends RelativeLayout {
 
                     fabParams.rightMargin = RIGHT_MARGIN;
                     fab.setLayoutParams(fabParams);
+
+                    fabContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                        @Override
+                        public void onGlobalLayout() {
+                            fabContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
+                            fab.setVisibility(VISIBLE);
+                        }
+                    });
 
                     RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) fabContainer.getLayoutParams();
                     layoutParams.height = toolbarSize.y;
@@ -260,10 +278,12 @@ public class FABToolbarLayout extends RelativeLayout {
                 reverseAnimators.add(xAnimR);
                 reverseAnimators.add(yAnimR);
 
-
                 // DRAWABLE ANIM
-                if (fabDrawable != null) {
+                if (fabDrawable != null && fabDrawableAnimationEnabled) {
                     fabDrawable.startTransition(SHOW_ANIM_DURATION / 3);
+                }
+                if(!fabDrawableAnimationEnabled) {
+                    fab.setImageDrawable(null);
                 }
 
 
@@ -274,7 +294,11 @@ public class FABToolbarLayout extends RelativeLayout {
                 drawableAnimR.addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        fabDrawable.reverseTransition(HIDE_ANIM_DURATION / 3);
+                        if(fabDrawableAnimationEnabled) {
+                            fabDrawable.reverseTransition(HIDE_ANIM_DURATION / 3);
+                        } else {
+                            fab.setImageDrawable(fabNormalDrawable);
+                        }
                     }
                 });
 

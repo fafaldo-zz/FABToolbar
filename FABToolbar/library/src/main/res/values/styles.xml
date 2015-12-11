@@ -11,5 +11,6 @@
         <attr name="fabId" format="reference"/>
         <attr name="containerId" format="reference"/>
         <attr name="fabToolbarId" format="reference"/>
+        <attr name="fabDrawableAnimationEnabled" format="boolean"/>
     </declare-styleable>
 </resources>
