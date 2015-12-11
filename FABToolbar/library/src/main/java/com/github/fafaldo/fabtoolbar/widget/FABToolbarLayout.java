@@ -60,7 +60,7 @@ public class FABToolbarLayout extends RelativeLayout {
     private View toolbarLayout;
     private ImageView fab;
     private TransitionDrawable fabDrawable;
-    private FABContainer fabContainer;
+    private RelativeLayout fabContainer;
 
     private Point toolbarPos = new Point();
     private Point toolbarSize = new Point();
@@ -115,7 +115,7 @@ public class FABToolbarLayout extends RelativeLayout {
             throw new IllegalStateException("You have to place a view with id = R.id.fabtoolbar_toolbar inside FABToolbarLayout");
         }
 
-        fabContainer = (FABContainer) findViewById(R.id.fabtoolbar_container);
+        fabContainer = (RelativeLayout) findViewById(R.id.fabtoolbar_container);
         if (fabContainer == null) {
             throw new IllegalStateException("You have to place a FABContainer view with id = R.id.fabtoolbar_container inside FABToolbarLayout");
         }
@@ -193,6 +193,8 @@ public class FABToolbarLayout extends RelativeLayout {
                 }
             }
         });
+
+        fab.setLayerType(LAYER_TYPE_SOFTWARE, null);
 
         fab.setOnClickListener(new OnClickListener() {
             @Override

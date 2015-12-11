@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-        <com.github.fafaldo.fabtoolbar.widget.FABContainer
+        <RelativeLayout
             android:id="@+id/fabtoolbar_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
                 app:fabSize="normal"
                 android:src="@drawable/abc_ic_menu_share_mtrl_alpha"/>
 
-        </com.github.fafaldo.fabtoolbar.widget.FABContainer>
+        </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/fabtoolbar_toolbar"
