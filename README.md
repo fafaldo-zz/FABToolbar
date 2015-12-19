@@ -23,7 +23,7 @@ How to use
 Import dependency using Gradle:
 
 ```
-compile 'com.github.fafaldo:fab-toolbar:1.0.1'
+compile 'com.github.fafaldo:fab-toolbar:1.1.0'
 ```
 
 
@@ -33,17 +33,17 @@ In order to use FABToolbar you need to implement following view hierarchy in you
 |
 |->FABToolbarLayout
 	|
-	|-> FABContainer (id: fabtoolbar_container)
+	|-> Some container (that is, or extends RelativeLayout)
 	|	|
-	|	|-> Your FAB (or other view that extends ImageView; id: fabtoolbar_fab)
+	|	|-> Your FAB (or other view that extends ImageView)
 	|	
-	|-> Your Toolbar (view that extends ViewGroup; id: fabtoolbar_toolbar)
+	|-> Your Toolbar (view that extends ViewGroup)
 		|
 		|-> Your elements
 		...
 ```
 
-Remember to assign each element a proper ID.
+Starting from version 1.1.0 views do NOT have to be assigned a static ID. Instead try referencing them in XML attributes in FABToolbarLayout, as shown below.
 
 Example implementation:
  
@@ -56,11 +56,14 @@ Example implementation:
 	app:hideDuration="200"
 	app:rightMargin="30dp"
 	app:bottomMargin="30dp"
-	app:fadeInFraction="0.2">
+	app:fadeInFraction="0.2"
+	app:fabId="@+id/fabtoolbar_fab"
+	app:containerId="@+id/fabtoolbar_container"
+	app:fabToolbarId="@+id/fabtoolbar_toolbar">
 
 	...
 	
-	<com.github.fafaldo.fabtoolbar.widget.FABContainer
+	<RelativeLayout
 		android:id="@+id/fabtoolbar_container"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
@@ -74,7 +77,7 @@ Example implementation:
 			app:fabSize="normal"
 			android:src="@drawable/abc_ic_menu_share_mtrl_alpha"/>
 
-	</com.github.fafaldo.fabtoolbar.widget.FABContainer>
+	</RelativeLayout>
 
 	<LinearLayout
 		android:id="@+id/fabtoolbar_toolbar"
@@ -123,12 +126,17 @@ You can control these parameters via XML:
 <attr name="fadeInPivotX" format="dimension"/>    //toolbar elements translation animation pivot X (in dp), default: 1/2 toolbar width
 <attr name="fadeInPivotY" format="dimension"/>    //toolbar elements translation animation pivot Y (in dp), default: 1/2 toolbar height
 <attr name="fadeInFraction" format="float"/>      //percent of translation animation, between element position and pivot point (float 0.0-1.0), default: 0.2
+<attr name="fabId" format="reference"/>			  //reference to the FAB view
+<attr name="containerId" format="reference"/>	  //reference to the FAB container view
+<attr name="fabToolbarId" format="reference"/>    //reference to the FAB toolbar view
+<attr name="fabDrawableAnimationEnabled" format="boolean"/> //enable or disable FAB cross-fade animation, default: true
 ```
 
 
 Changelog
 ---------
 
+* 1.1.0 - view id constraints removed, removed container layout, fixed FAB shadow problems
 * 1.0 - initial release
 
 
