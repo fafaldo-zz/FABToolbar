@@ -9,8 +9,8 @@
         android:layout_height="match_parent"
         app:showDuration="600"
         app:hideDuration="200"
-        app:rightMargin="30dp"
-        app:bottomMargin="30dp"
+        app:horizontalMargin="30dp"
+        app:verticalMargin="30dp"
         app:fadeInFraction="0.2"
         app:fabId="@+id/fabtoolbar_fab"
         app:containerId="@+id/fabtoolbar_container"
@@ -24,9 +24,7 @@
         <RelativeLayout
             android:id="@id/fabtoolbar_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true">
+            android:layout_height="wrap_content">
 
             <android.support.design.widget.FloatingActionButton
                 android:id="@id/fabtoolbar_fab"

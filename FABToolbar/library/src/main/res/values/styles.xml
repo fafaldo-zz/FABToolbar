@@ -3,8 +3,8 @@
     <declare-styleable name="FABToolbarLayout">
         <attr name="showDuration" format="integer"/>
         <attr name="hideDuration" format="integer"/>
-        <attr name="bottomMargin" format="dimension"/>
-        <attr name="rightMargin" format="dimension"/>
+        <attr name="verticalMargin" format="dimension"/>
+        <attr name="horizontalMargin" format="dimension"/>
         <attr name="fadeInPivotX" format="dimension"/>
         <attr name="fadeInPivotY" format="dimension"/>
         <attr name="fadeInFraction" format="float"/>

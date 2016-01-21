@@ -50,8 +50,8 @@ public class FABToolbarLayout extends RelativeLayout {
 
     private int SHOW_ANIM_DURATION = 600;
     private int HIDE_ANIM_DURATION = 600;
-    private int RIGHT_MARGIN = 100;
-    private int BOTTOM_MARGIN = 100;
+    private int HORIZONTAL_MARGIN = 100;
+    private int VERTICAL_MARGIN = 100;
 
     private int pivotX = -1;
     private int pivotY = -1;
@@ -99,8 +99,8 @@ public class FABToolbarLayout extends RelativeLayout {
 
         SHOW_ANIM_DURATION = a.getInt(R.styleable.FABToolbarLayout_showDuration, SHOW_ANIM_DURATION);
         HIDE_ANIM_DURATION = a.getInt(R.styleable.FABToolbarLayout_hideDuration, HIDE_ANIM_DURATION);
-        BOTTOM_MARGIN = a.getDimensionPixelSize(R.styleable.FABToolbarLayout_bottomMargin, BOTTOM_MARGIN);
-        RIGHT_MARGIN = a.getDimensionPixelSize(R.styleable.FABToolbarLayout_rightMargin, RIGHT_MARGIN);
+        VERTICAL_MARGIN = a.getDimensionPixelSize(R.styleable.FABToolbarLayout_verticalMargin, VERTICAL_MARGIN);
+        HORIZONTAL_MARGIN = a.getDimensionPixelSize(R.styleable.FABToolbarLayout_horizontalMargin, HORIZONTAL_MARGIN);
         pivotX = a.getDimensionPixelSize(R.styleable.FABToolbarLayout_fadeInPivotX, -1);
         pivotY = a.getDimensionPixelSize(R.styleable.FABToolbarLayout_fadeInPivotY, -1);
         fraction = a.getFloat(R.styleable.FABToolbarLayout_fadeInFraction, fraction);
@@ -172,11 +172,18 @@ public class FABToolbarLayout extends RelativeLayout {
                     fabContainer.getLocationOnScreen(fabContainerPos);
 
                     RelativeLayout.LayoutParams fabParams = (RelativeLayout.LayoutParams) fab.getLayoutParams();
+                    RelativeLayout.LayoutParams fabContainerParams = (RelativeLayout.LayoutParams) fabContainer.getLayoutParams();
 
-                    int distanceFromBottom = (toolbarSize.y - fab.getHeight())/2;
-                    int marginToSet = BOTTOM_MARGIN - distanceFromBottom;
+                    int distanceVertical = (toolbarSize.y - fab.getHeight())/2;
+                    int verticalMarginToSet = VERTICAL_MARGIN - distanceVertical;
 
-                    fabParams.rightMargin = RIGHT_MARGIN;
+                    if(fabParams.getRules()[ALIGN_PARENT_LEFT] == RelativeLayout.TRUE) {
+                        fabParams.leftMargin = HORIZONTAL_MARGIN;
+                    } else {
+                        fabParams.addRule(ALIGN_PARENT_RIGHT);
+                        fabParams.rightMargin = HORIZONTAL_MARGIN;
+                    }
+
                     fab.setLayoutParams(fabParams);
 
                     fabContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -188,10 +195,15 @@ public class FABToolbarLayout extends RelativeLayout {
                         }
                     });
 
-                    RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) fabContainer.getLayoutParams();
-                    layoutParams.height = toolbarSize.y;
-                    layoutParams.bottomMargin = marginToSet;
-                    fabContainer.setLayoutParams(layoutParams);
+                    fabContainerParams.height = toolbarSize.y;
+                    if(fabContainerParams.getRules()[ALIGN_PARENT_TOP] == RelativeLayout.TRUE) {
+                        fabContainerParams.topMargin = verticalMarginToSet;
+                    } else {
+                        fabContainerParams.addRule(ALIGN_PARENT_BOTTOM);
+                        fabContainerParams.bottomMargin = verticalMarginToSet;
+                    }
+
+                    fabContainer.setLayoutParams(fabContainerParams);
 
                     toolbarLayout.setVisibility(INVISIBLE);
                     toolbarLayout.setAlpha(0f);
@@ -212,7 +224,6 @@ public class FABToolbarLayout extends RelativeLayout {
                     fabSize.set(fab.getWidth(), fab.getHeight());
 
                     RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) fab.getLayoutParams();
-                    layoutParams.addRule(ALIGN_PARENT_RIGHT);
                     layoutParams.addRule(CENTER_VERTICAL);
                     fab.setLayoutParams(layoutParams);
                 }
