@@ -400,4 +400,12 @@ public class FABToolbarLayout extends RelativeLayout {
     public boolean isToolbar() {
         return isToolbar;
     }
+
+    public boolean isFabDrawableAnimationEnabled() {
+        return fabDrawableAnimationEnabled;
+    }
+
+    public void setFabDrawableAnimationEnabled(boolean fabDrawableAnimationEnabled) {
+        this.fabDrawableAnimationEnabled = fabDrawableAnimationEnabled;
+    }
 }
