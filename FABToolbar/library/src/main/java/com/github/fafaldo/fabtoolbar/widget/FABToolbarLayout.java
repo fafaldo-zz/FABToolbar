@@ -78,7 +78,8 @@ public class FABToolbarLayout extends RelativeLayout {
 
     private boolean fabDrawableAnimationEnabled = true;
 
-    private AnimatorSet hideAnimSet;
+    private int originalToolbarSize = -1;
+    private int originalFABSize;
 
     public FABToolbarLayout(Context context) {
         super(context);
@@ -196,6 +197,9 @@ public class FABToolbarLayout extends RelativeLayout {
                     });
 
                     fabContainerParams.height = toolbarSize.y;
+                    if(originalToolbarSize == -1) {
+                        originalToolbarSize = toolbarSize.y;
+                    }
                     if(fabContainerParams.getRules()[ALIGN_PARENT_TOP] == RelativeLayout.TRUE) {
                         fabContainerParams.topMargin = verticalMarginToSet;
                     } else {
@@ -230,6 +234,21 @@ public class FABToolbarLayout extends RelativeLayout {
             }
         });
 
+        toolbarLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                RelativeLayout.LayoutParams fabContainerParams = (RelativeLayout.LayoutParams) fabContainer.getLayoutParams();
+                fabContainerParams.height = toolbarLayout.getHeight();
+                fabContainer.setLayoutParams(fabContainerParams);
+
+
+                int[] pos = new int[2];
+                toolbarSize.set(toolbarLayout.getWidth(), toolbarLayout.getHeight());
+                toolbarLayout.getLocationOnScreen(pos);
+                toolbarPos.set(pos[0], pos[1]);
+            }
+        });
+
         fab.setLayerType(LAYER_TYPE_SOFTWARE, null);
 
         fab.setOnClickListener(new OnClickListener() {
@@ -244,24 +263,23 @@ public class FABToolbarLayout extends RelativeLayout {
                 int[] fabP = new int[2];
                 fab.getLocationOnScreen(fabP);
                 fabPos.set(fabP[0], fabP[1]);
+                originalFABSize = fab.getWidth();
 
                 List<Animator> animators = new ArrayList<>();
-                List<Animator> reverseAnimators = new ArrayList<>();
 
 
                 // TRANSLATION ANIM
                 int xDest = toolbarPos.x + (toolbarSize.x - fabSize.x) / 2;
-                int yDest = toolbarPos.y + (toolbarSize.y - fabSize.y) / 2;
 
 
                 int[] fabConPos = new int[2];
                 fabContainer.getLocationOnScreen(fabConPos);
 
                 int xDelta = xDest - fabPos.x;
-                int yDelta = toolbarPos.y - fabConPos[1];
+                final int yDelta = toolbarPos.y - fabConPos[1];
 
-                ObjectAnimator xAnim = ObjectAnimator.ofFloat(fab, "translationX", 0, xDelta);
-                ObjectAnimator yAnim = ObjectAnimator.ofFloat(fabContainer, "translationY", 0, yDelta);
+                ObjectAnimator xAnim = ObjectAnimator.ofFloat(fab, "translationX", fab.getTranslationX(), fab.getTranslationX() + xDelta);
+                ObjectAnimator yAnim = ObjectAnimator.ofFloat(fabContainer, "translationY", fabContainer.getTranslationY(), fabContainer.getTranslationY() + yDelta);
 
                 xAnim.setInterpolator(new AccelerateInterpolator());
                 yAnim.setInterpolator(new DecelerateInterpolator(3f));
@@ -273,22 +291,6 @@ public class FABToolbarLayout extends RelativeLayout {
                 animators.add(yAnim);
 
 
-                // REVERSE TRANSLATION ANIM
-                ObjectAnimator xAnimR = ObjectAnimator.ofFloat(fab, "translationX", xDelta, 0);
-                ObjectAnimator yAnimR = ObjectAnimator.ofFloat(fabContainer, "translationY", yDelta, 0);
-
-                xAnimR.setInterpolator(new DecelerateInterpolator());
-                yAnimR.setInterpolator(new AccelerateInterpolator());
-
-                xAnimR.setDuration(HIDE_ANIM_DURATION / 2);
-                yAnimR.setDuration(HIDE_ANIM_DURATION / 2);
-
-                xAnimR.setStartDelay(HIDE_ANIM_DURATION / 2);
-                yAnimR.setStartDelay(HIDE_ANIM_DURATION / 2);
-
-                reverseAnimators.add(xAnimR);
-                reverseAnimators.add(yAnimR);
-
                 // DRAWABLE ANIM
                 if (fabDrawable != null && fabDrawableAnimationEnabled) {
                     fabDrawable.startTransition(SHOW_ANIM_DURATION / 3);
@@ -296,24 +298,6 @@ public class FABToolbarLayout extends RelativeLayout {
                 if(!fabDrawableAnimationEnabled) {
                     fab.setImageDrawable(null);
                 }
-
-
-                // REVERSE DRAWABLE ANIM
-                ValueAnimator drawableAnimR = ValueAnimator.ofFloat(0, 0);
-
-                drawableAnimR.setDuration(2* HIDE_ANIM_DURATION /3);
-                drawableAnimR.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        if(fabDrawableAnimationEnabled) {
-                            fabDrawable.reverseTransition(HIDE_ANIM_DURATION / 3);
-                        } else {
-                            fab.setImageDrawable(fabNormalDrawable);
-                        }
-                    }
-                });
-
-                reverseAnimators.add(drawableAnimR);
 
 
                 // SIZE ANIM
@@ -337,34 +321,11 @@ public class FABToolbarLayout extends RelativeLayout {
                 animators.add(sizeAnim);
 
 
-                // REVERSE SIZE ANIM
-                final ValueAnimator sizeAnimR = ValueAnimator.ofFloat(finalRadius, startRadius);
-                sizeAnimR.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                        float valFloat = (Float) valueAnimator.getAnimatedValue();
-
-                        fab.setScaleX(valFloat / startRadius);
-                        fab.setScaleY(valFloat / startRadius);
-                    }
-                });
-                sizeAnimR.setDuration(HIDE_ANIM_DURATION / 2);
-                sizeAnimR.setStartDelay(HIDE_ANIM_DURATION / 4);
-
-                reverseAnimators.add(sizeAnimR);
-
-
                 // EXPAND AND SHOW MENU ANIM
                 ViewGroup toolbarLayoutViewGroup = (ViewGroup) toolbarLayout;
                 List<Animator> expandAnim = ExpandAnimationUtils.build(toolbarLayoutViewGroup, pivotX != -1 ? pivotX : toolbarLayout.getWidth() / 2, pivotY != -1 ? pivotY : toolbarLayout.getHeight() / 2, fraction, SHOW_ANIM_DURATION / 3, 2 * SHOW_ANIM_DURATION / 3);
 
                 animators.addAll(expandAnim);
-
-
-                // REVERSE EXPAND AND SHOW MENU ANIM
-                List<Animator> expandAnimR = ExpandAnimationUtils.buildReversed(toolbarLayoutViewGroup, pivotX != -1 ? pivotX : toolbarLayout.getWidth()/2, pivotY != -1 ? pivotY : toolbarLayout.getHeight()/2, fraction, HIDE_ANIM_DURATION /3, 0);
-
-                reverseAnimators.addAll(expandAnimR);
 
 
                 // PLAY SHOW ANIMATION
@@ -376,9 +337,6 @@ public class FABToolbarLayout extends RelativeLayout {
                         isToolbar = true;
                     }
                 });
-
-                hideAnimSet = new AnimatorSet();
-                hideAnimSet.playTogether(reverseAnimators);
 
                 animatorSet.start();
             }
@@ -392,16 +350,104 @@ public class FABToolbarLayout extends RelativeLayout {
     }
 
     public void hide() {
-        if(hideAnimSet != null && isToolbar) {
-            hideAnimSet.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    isFab = true;
-                }
-            });
-            hideAnimSet.start();
-            isToolbar = false;
+        //TODO better handling of fast clicks
+        if(!isToolbar) {
+            return;
         }
+        isToolbar = false;
+
+        int[] fabP = new int[2];
+        fab.getLocationOnScreen(fabP);
+        Point tempFABPos = new Point();
+        tempFABPos.set(fabP[0], fabP[1]);
+
+        List<Animator> reverseAnimators = new ArrayList<>();
+
+
+        // REVERSE TRANSLATION ANIM
+        int xSource = toolbarPos.x + (toolbarSize.x - originalFABSize) / 2;
+        int distanceVertical = (toolbarSize.y - fab.getHeight())/2;
+        int verticalMarginToSet = VERTICAL_MARGIN - distanceVertical;
+        int yDest = toolbarPos.y - verticalMarginToSet;
+
+        int[] fabConPos = new int[2];
+        fabContainer.getLocationOnScreen(fabConPos);
+
+        int xDelta = fabPos.x - xSource;
+        final int yDelta = yDest - fabConPos[1];
+
+        ObjectAnimator xAnimR = ObjectAnimator.ofFloat(fab, "translationX", fab.getTranslationX(), fab.getTranslationX() + xDelta);
+        ObjectAnimator yAnimR = ObjectAnimator.ofFloat(fabContainer, "translationY", fabContainer.getTranslationY(), fabContainer.getTranslationY() + yDelta);
+
+        xAnimR.setInterpolator(new DecelerateInterpolator());
+        yAnimR.setInterpolator(new AccelerateInterpolator());
+
+        xAnimR.setDuration(HIDE_ANIM_DURATION / 2);
+        yAnimR.setDuration(HIDE_ANIM_DURATION / 2);
+
+        xAnimR.setStartDelay(HIDE_ANIM_DURATION / 2);
+        yAnimR.setStartDelay(HIDE_ANIM_DURATION / 2);
+
+        reverseAnimators.add(xAnimR);
+        reverseAnimators.add(yAnimR);
+
+        // REVERSE DRAWABLE ANIM
+        ValueAnimator drawableAnimR = ValueAnimator.ofFloat(0, 0);
+
+        drawableAnimR.setDuration(2* HIDE_ANIM_DURATION /3);
+        drawableAnimR.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if(fabDrawableAnimationEnabled) {
+                    fabDrawable.reverseTransition(HIDE_ANIM_DURATION / 3);
+                } else {
+                    fab.setImageDrawable(fabNormalDrawable);
+                }
+            }
+        });
+
+        reverseAnimators.add(drawableAnimR);
+
+
+        // REVERSE SIZE ANIM
+        // real size is 55x55 instead of 84x98
+        final int startRadius = originalToolbarSize / 2;
+        int finalRadius = (int)(Math.sqrt(Math.pow(toolbarSize.x, 2) + Math.pow(toolbarSize.y, 2))/2);
+        int realRadius = (int)(98f * finalRadius / 55f);
+        final ValueAnimator sizeAnimR = ValueAnimator.ofFloat(realRadius, startRadius);
+        sizeAnimR.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                float valFloat = (Float) valueAnimator.getAnimatedValue();
+
+                fab.setScaleX(valFloat / startRadius);
+                fab.setScaleY(valFloat / startRadius);
+            }
+        });
+        sizeAnimR.setDuration(HIDE_ANIM_DURATION / 2);
+        sizeAnimR.setStartDelay(HIDE_ANIM_DURATION / 4);
+
+        reverseAnimators.add(sizeAnimR);
+
+
+        // REVERSE EXPAND AND SHOW MENU ANIM
+        ViewGroup toolbarLayoutViewGroup = (ViewGroup) toolbarLayout;
+        List<Animator> expandAnimR = ExpandAnimationUtils.buildReversed(toolbarLayoutViewGroup, pivotX != -1 ? pivotX : toolbarLayout.getWidth()/2, pivotY != -1 ? pivotY : toolbarLayout.getHeight()/2, fraction, HIDE_ANIM_DURATION /3, 0);
+
+        reverseAnimators.addAll(expandAnimR);
+
+
+        // PLAY SHOW ANIMATION
+        final AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(reverseAnimators);
+        animatorSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                isFab = true;
+            }
+        });
+
+        animatorSet.start();
     }
 
     public boolean isFab() {
