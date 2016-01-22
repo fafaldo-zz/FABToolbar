@@ -251,102 +251,95 @@ public class FABToolbarLayout extends RelativeLayout {
 
         fab.setLayerType(LAYER_TYPE_SOFTWARE, null);
 
-        fab.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODO better handling of fast clicks
-                if(!isFab) {
-                    return;
-                }
-                isFab = false;
-
-                int[] fabP = new int[2];
-                fab.getLocationOnScreen(fabP);
-                fabPos.set(fabP[0], fabP[1]);
-                originalFABSize = fab.getWidth();
-
-                List<Animator> animators = new ArrayList<>();
-
-
-                // TRANSLATION ANIM
-                int xDest = toolbarPos.x + (toolbarSize.x - fabSize.x) / 2;
-
-
-                int[] fabConPos = new int[2];
-                fabContainer.getLocationOnScreen(fabConPos);
-
-                int xDelta = xDest - fabPos.x;
-                final int yDelta = toolbarPos.y - fabConPos[1];
-
-                ObjectAnimator xAnim = ObjectAnimator.ofFloat(fab, "translationX", fab.getTranslationX(), fab.getTranslationX() + xDelta);
-                ObjectAnimator yAnim = ObjectAnimator.ofFloat(fabContainer, "translationY", fabContainer.getTranslationY(), fabContainer.getTranslationY() + yDelta);
-
-                xAnim.setInterpolator(new AccelerateInterpolator());
-                yAnim.setInterpolator(new DecelerateInterpolator(3f));
-
-                xAnim.setDuration(SHOW_ANIM_DURATION / 2);
-                yAnim.setDuration(SHOW_ANIM_DURATION / 2);
-
-                animators.add(xAnim);
-                animators.add(yAnim);
-
-
-                // DRAWABLE ANIM
-                if (fabDrawable != null && fabDrawableAnimationEnabled) {
-                    fabDrawable.startTransition(SHOW_ANIM_DURATION / 3);
-                }
-                if(!fabDrawableAnimationEnabled) {
-                    fab.setImageDrawable(null);
-                }
-
-
-                // SIZE ANIM
-                // real size is 55x55 instead of 84x98
-                final int startRadius = fabSize.x / 2;
-                int finalRadius = (int)(Math.sqrt(Math.pow(toolbarSize.x, 2) + Math.pow(toolbarSize.y, 2))/2);
-                int realRadius = (int)(98f * finalRadius / 55f);
-                final ValueAnimator sizeAnim = ValueAnimator.ofFloat(startRadius, realRadius);
-                sizeAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                        float valFloat = (Float) valueAnimator.getAnimatedValue();
-
-                        fab.setScaleX(valFloat / startRadius);
-                        fab.setScaleY(valFloat / startRadius);
-                    }
-                });
-                sizeAnim.setDuration(SHOW_ANIM_DURATION / 2);
-                sizeAnim.setStartDelay(SHOW_ANIM_DURATION / 4);
-
-                animators.add(sizeAnim);
-
-
-                // EXPAND AND SHOW MENU ANIM
-                ViewGroup toolbarLayoutViewGroup = (ViewGroup) toolbarLayout;
-                List<Animator> expandAnim = ExpandAnimationUtils.build(toolbarLayoutViewGroup, pivotX != -1 ? pivotX : toolbarLayout.getWidth() / 2, pivotY != -1 ? pivotY : toolbarLayout.getHeight() / 2, fraction, SHOW_ANIM_DURATION / 3, 2 * SHOW_ANIM_DURATION / 3);
-
-                animators.addAll(expandAnim);
-
-
-                // PLAY SHOW ANIMATION
-                final AnimatorSet animatorSet = new AnimatorSet();
-                animatorSet.playTogether(animators);
-                animatorSet.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        isToolbar = true;
-                    }
-                });
-
-                animatorSet.start();
-            }
-        });
-
         isInit = false;
     }
 
     public void show() {
-        fab.callOnClick();
+        //TODO better handling of fast clicks
+        if(!isFab) {
+            return;
+        }
+        isFab = false;
+
+        int[] fabP = new int[2];
+        fab.getLocationOnScreen(fabP);
+        fabPos.set(fabP[0], fabP[1]);
+        originalFABSize = fab.getWidth();
+
+        List<Animator> animators = new ArrayList<>();
+
+
+        // TRANSLATION ANIM
+        int xDest = toolbarPos.x + (toolbarSize.x - fabSize.x) / 2;
+
+
+        int[] fabConPos = new int[2];
+        fabContainer.getLocationOnScreen(fabConPos);
+
+        int xDelta = xDest - fabPos.x;
+        final int yDelta = toolbarPos.y - fabConPos[1];
+
+        ObjectAnimator xAnim = ObjectAnimator.ofFloat(fab, "translationX", fab.getTranslationX(), fab.getTranslationX() + xDelta);
+        ObjectAnimator yAnim = ObjectAnimator.ofFloat(fabContainer, "translationY", fabContainer.getTranslationY(), fabContainer.getTranslationY() + yDelta);
+
+        xAnim.setInterpolator(new AccelerateInterpolator());
+        yAnim.setInterpolator(new DecelerateInterpolator(3f));
+
+        xAnim.setDuration(SHOW_ANIM_DURATION / 2);
+        yAnim.setDuration(SHOW_ANIM_DURATION / 2);
+
+        animators.add(xAnim);
+        animators.add(yAnim);
+
+
+        // DRAWABLE ANIM
+        if (fabDrawable != null && fabDrawableAnimationEnabled) {
+            fabDrawable.startTransition(SHOW_ANIM_DURATION / 3);
+        }
+        if(!fabDrawableAnimationEnabled) {
+            fab.setImageDrawable(null);
+        }
+
+
+        // SIZE ANIM
+        // real size is 55x55 instead of 84x98
+        final int startRadius = fabSize.x / 2;
+        int finalRadius = (int)(Math.sqrt(Math.pow(toolbarSize.x, 2) + Math.pow(toolbarSize.y, 2))/2);
+        int realRadius = (int)(98f * finalRadius / 55f);
+        final ValueAnimator sizeAnim = ValueAnimator.ofFloat(startRadius, realRadius);
+        sizeAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                float valFloat = (Float) valueAnimator.getAnimatedValue();
+
+                fab.setScaleX(valFloat / startRadius);
+                fab.setScaleY(valFloat / startRadius);
+            }
+        });
+        sizeAnim.setDuration(SHOW_ANIM_DURATION / 2);
+        sizeAnim.setStartDelay(SHOW_ANIM_DURATION / 4);
+
+        animators.add(sizeAnim);
+
+
+        // EXPAND AND SHOW MENU ANIM
+        ViewGroup toolbarLayoutViewGroup = (ViewGroup) toolbarLayout;
+        List<Animator> expandAnim = ExpandAnimationUtils.build(toolbarLayoutViewGroup, pivotX != -1 ? pivotX : toolbarLayout.getWidth() / 2, pivotY != -1 ? pivotY : toolbarLayout.getHeight() / 2, fraction, SHOW_ANIM_DURATION / 3, 2 * SHOW_ANIM_DURATION / 3);
+
+        animators.addAll(expandAnim);
+
+
+        // PLAY SHOW ANIMATION
+        final AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(animators);
+        animatorSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                isToolbar = true;
+            }
+        });
+
+        animatorSet.start();
     }
 
     public void hide() {

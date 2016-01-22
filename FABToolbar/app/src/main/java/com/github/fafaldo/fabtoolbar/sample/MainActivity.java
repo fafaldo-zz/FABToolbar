@@ -15,6 +15,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private FABToolbarLayout layout;
     private View one, two, three, four;
     private ListView list;
+    private View fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         three = findViewById(R.id.three);
         four = findViewById(R.id.four);
         list = (ListView) findViewById(R.id.list);
+        fab = findViewById(R.id.fabtoolbar_fab);
 
         one.setOnClickListener(this);
         two.setOnClickListener(this);
@@ -42,6 +44,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                layout.show();
+            }
+        });
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 layout.show();
             }
         });
