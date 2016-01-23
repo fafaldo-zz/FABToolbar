@@ -190,7 +190,11 @@ public class FABToolbarLayout extends RelativeLayout {
                     fabContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                         @Override
                         public void onGlobalLayout() {
-                            fabContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                                toolbarLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                            } else {
+                                toolbarLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                            }
 
                             fab.setVisibility(VISIBLE);
                         }
