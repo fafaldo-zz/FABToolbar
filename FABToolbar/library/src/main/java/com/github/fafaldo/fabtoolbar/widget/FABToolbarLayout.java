@@ -255,6 +255,8 @@ public class FABToolbarLayout extends RelativeLayout {
 
         fab.setLayerType(LAYER_TYPE_SOFTWARE, null);
 
+        setClipChildren(false);
+
         isInit = false;
     }
 
@@ -264,6 +266,8 @@ public class FABToolbarLayout extends RelativeLayout {
             return;
         }
         isFab = false;
+
+        setClipChildren(true);
 
         int[] fabP = new int[2];
         fab.getLocationOnScreen(fabP);
@@ -441,6 +445,8 @@ public class FABToolbarLayout extends RelativeLayout {
             @Override
             public void onAnimationEnd(Animator animation) {
                 isFab = true;
+
+                setClipChildren(false);
             }
         });
 
