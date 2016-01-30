@@ -23,7 +23,7 @@ How to use
 Import dependency using Gradle:
 
 ```
-compile 'com.github.fafaldo:fab-toolbar:1.1.0'
+compile 'com.github.fafaldo:fab-toolbar:1.2.0'
 ```
 
 
@@ -54,8 +54,8 @@ Example implementation:
 	android:layout_height="match_parent"
 	app:showDuration="600"
 	app:hideDuration="200"
-	app:rightMargin="30dp"
-	app:bottomMargin="30dp"
+	app:horizontalMargin="30dp"
+	app:verticalMargin="30dp"
 	app:fadeInFraction="0.2"
 	app:fabId="@+id/fabtoolbar_fab"
 	app:containerId="@+id/fabtoolbar_container"
@@ -100,12 +100,12 @@ Example implementation:
 </com.github.fafaldo.fabtoolbar.widget.FABToolbarLayout>
 ```
 
-Toolbar will be automatically opened on FAB click. If you want to do it manually use function
+To open toolbar call method
 ```
 show();
 ```
 
-To close toolbar call function
+To close toolbar call method
 ```
 hide();
 ```
@@ -119,16 +119,16 @@ Parameters:
 You can control these parameters via XML:
 
 ```
-<attr name="showDuration" format="integer"/>      //show animation duration (in ms), default: 600 ms
-<attr name="hideDuration" format="integer"/>      //hide animation duration (in ms), default: 600 ms
-<attr name="bottomMargin" format="dimension"/>    //FAB bottom margin (in dp), default: 100 px
-<attr name="rightMargin" format="dimension"/>     //FAB right margin (in dp), default: 100 px
-<attr name="fadeInPivotX" format="dimension"/>    //toolbar elements translation animation pivot X (in dp), default: 1/2 toolbar width
-<attr name="fadeInPivotY" format="dimension"/>    //toolbar elements translation animation pivot Y (in dp), default: 1/2 toolbar height
-<attr name="fadeInFraction" format="float"/>      //percent of translation animation, between element position and pivot point (float 0.0-1.0), default: 0.2
-<attr name="fabId" format="reference"/>			  //reference to the FAB view
-<attr name="containerId" format="reference"/>	  //reference to the FAB container view
-<attr name="fabToolbarId" format="reference"/>    //reference to the FAB toolbar view
+<attr name="showDuration" format="integer"/>      	//show animation duration (in ms), default: 600 ms
+<attr name="hideDuration" format="integer"/>      	//hide animation duration (in ms), default: 600 ms
+<attr name="verticalMargin" format="dimension"/>    //FAB vertical margin (in dp), default: 100 px
+<attr name="horizontalMargin" format="dimension"/>  //FAB horizontal margin (in dp), default: 100 px
+<attr name="fadeInPivotX" format="dimension"/>    	//toolbar elements translation animation pivot X (in dp), default: 1/2 toolbar width
+<attr name="fadeInPivotY" format="dimension"/>    	//toolbar elements translation animation pivot Y (in dp), default: 1/2 toolbar height
+<attr name="fadeInFraction" format="float"/>      	//percent of translation animation, between element position and pivot point (float 0.0-1.0), default: 0.2
+<attr name="fabId" format="reference"/>			  	//reference to the FAB view
+<attr name="containerId" format="reference"/>	  	//reference to the FAB container view
+<attr name="fabToolbarId" format="reference"/>    	//reference to the FAB toolbar view
 <attr name="fabDrawableAnimationEnabled" format="boolean"/> //enable or disable FAB cross-fade animation, default: true
 ```
 
@@ -136,6 +136,7 @@ You can control these parameters via XML:
 Changelog
 ---------
 
+* 1.2.0 - most of the issues reported by users fixed - toolbar shadow, wrap_content height, side alignment, OnClickListener etc.
 * 1.1.0 - view id constraints removed, removed container layout, fixed FAB shadow problems
 * 1.0 - initial release
 
