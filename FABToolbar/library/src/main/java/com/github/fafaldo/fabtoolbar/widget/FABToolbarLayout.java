@@ -238,18 +238,20 @@ public class FABToolbarLayout extends RelativeLayout {
             }
         });
 
-        toolbarLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        toolbarLayout.addOnLayoutChangeListener(new OnLayoutChangeListener() {
             @Override
-            public void onGlobalLayout() {
-                RelativeLayout.LayoutParams fabContainerParams = (RelativeLayout.LayoutParams) fabContainer.getLayoutParams();
-                fabContainerParams.height = toolbarLayout.getHeight();
-                fabContainer.setLayoutParams(fabContainerParams);
+            public void onLayoutChange(View v, int left, int top, int right, int bottom,
+                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                if (top != oldTop || bottom != oldBottom) {
+                    RelativeLayout.LayoutParams fabContainerParams = (RelativeLayout.LayoutParams) fabContainer.getLayoutParams();
+                    fabContainerParams.height = toolbarLayout.getHeight();
+                    fabContainer.setLayoutParams(fabContainerParams);
 
-
-                int[] pos = new int[2];
-                toolbarSize.set(toolbarLayout.getWidth(), toolbarLayout.getHeight());
-                toolbarLayout.getLocationOnScreen(pos);
-                toolbarPos.set(pos[0], pos[1]);
+                    int[] pos = new int[2];
+                    toolbarSize.set(toolbarLayout.getWidth(), toolbarLayout.getHeight());
+                    toolbarLayout.getLocationOnScreen(pos);
+                    toolbarPos.set(pos[0], pos[1]);
+                }
             }
         });
 
