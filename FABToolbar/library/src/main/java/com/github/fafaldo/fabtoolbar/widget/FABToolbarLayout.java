@@ -12,6 +12,7 @@ import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Build;
+import android.support.design.widget.CoordinatorLayout;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,7 @@ import java.util.List;
 /**
  * Created by rtulaza on 2015-07-30.
  */
+@CoordinatorLayout.DefaultBehavior(FABToolbarBehavior.class)
 public class FABToolbarLayout extends RelativeLayout {
 
     // anim timing
