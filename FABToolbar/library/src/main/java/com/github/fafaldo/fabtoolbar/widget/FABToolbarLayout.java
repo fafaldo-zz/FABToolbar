@@ -139,19 +139,7 @@ public class FABToolbarLayout extends RelativeLayout {
 
         fab.setVisibility(INVISIBLE);
 
-        Drawable tempDrawable = fab.getDrawable();
-        fabNormalDrawable = tempDrawable;
-        if(fabDrawableAnimationEnabled) {
-            TransitionDrawable transitionDrawable;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                transitionDrawable = new TransitionDrawable(new Drawable[]{tempDrawable, getResources().getDrawable(R.drawable.empty_drawable, getContext().getTheme())});
-            } else {
-                transitionDrawable = new TransitionDrawable(new Drawable[]{tempDrawable, getResources().getDrawable(R.drawable.empty_drawable)});
-            }
-            transitionDrawable.setCrossFadeEnabled(fabDrawableAnimationEnabled);
-            fabDrawable = transitionDrawable;
-            fab.setImageDrawable(transitionDrawable);
-        }
+        updateFabDrawable();
 
         toolbarLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -260,6 +248,22 @@ public class FABToolbarLayout extends RelativeLayout {
         isInit = false;
     }
 
+    private void updateFabDrawable() {
+        if(fabDrawableAnimationEnabled) {
+            Drawable tempDrawable = fab.getDrawable();
+            fabNormalDrawable = tempDrawable;
+            TransitionDrawable transitionDrawable;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                transitionDrawable = new TransitionDrawable(new Drawable[]{tempDrawable, getResources().getDrawable(R.drawable.empty_drawable, getContext().getTheme())});
+            } else {
+                transitionDrawable = new TransitionDrawable(new Drawable[]{tempDrawable, getResources().getDrawable(R.drawable.empty_drawable)});
+            }
+            transitionDrawable.setCrossFadeEnabled(fabDrawableAnimationEnabled);
+            fabDrawable = transitionDrawable;
+            fab.setImageDrawable(transitionDrawable);
+        }
+    }
+
     public void show() {
         //TODO better handling of fast clicks
         if(!isFab) {
@@ -301,6 +305,8 @@ public class FABToolbarLayout extends RelativeLayout {
 
 
         // DRAWABLE ANIM
+        if (fab.getDrawable() != fabDrawable)
+            updateFabDrawable();
         if (fabDrawable != null && fabDrawableAnimationEnabled) {
             fabDrawable.startTransition(SHOW_ANIM_DURATION / 3);
         }
