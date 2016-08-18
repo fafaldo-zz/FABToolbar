@@ -16,6 +16,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private View one, two, three, four;
     private ListView list;
     private View fab;
+    private View fabToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         four = findViewById(R.id.four);
         list = (ListView) findViewById(R.id.list);
         fab = findViewById(R.id.fabtoolbar_fab);
+        fabToolbar = findViewById(R.id.fabtoolbar_toolbar);
 
         one.setOnClickListener(this);
         two.setOnClickListener(this);
@@ -58,7 +60,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onBackPressed() {
-        layout.hide();
+        
+        if (fabToolbar.getVisibility() == View.VISIBLE) {
+            //hide the toolbar
+            layout.hide();
+        } else {
+            //back to previous activity
+            finish();
+        }
     }
 
     @Override
