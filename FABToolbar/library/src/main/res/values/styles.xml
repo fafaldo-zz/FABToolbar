@@ -12,5 +12,9 @@
         <attr name="containerId" format="reference"/>
         <attr name="fabToolbarId" format="reference"/>
         <attr name="fabDrawableAnimationEnabled" format="boolean"/>
+        <attr name="defaultView" format="enum">
+            <enum name="fab" value="0" />
+            <enum name="toolbar" value="1" />
+        </attr>
     </declare-styleable>
 </resources>

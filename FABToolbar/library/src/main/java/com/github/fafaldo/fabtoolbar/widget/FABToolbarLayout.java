@@ -74,6 +74,7 @@ public class FABToolbarLayout extends RelativeLayout {
 
     private boolean isFab = true;
     private boolean isToolbar = false;
+    private boolean showToolBarByDefault = false;
     private boolean isInit = true;
 
     private boolean fabDrawableAnimationEnabled = true;
@@ -109,6 +110,7 @@ public class FABToolbarLayout extends RelativeLayout {
         containerId = a.getResourceId(R.styleable.FABToolbarLayout_containerId, -1);
         toolbarId = a.getResourceId(R.styleable.FABToolbarLayout_fabToolbarId, -1);
         fabDrawableAnimationEnabled = a.getBoolean(R.styleable.FABToolbarLayout_fabDrawableAnimationEnabled, true);
+        showToolBarByDefault = a.getInt(R.styleable.FABToolbarLayout_defaultView, 0) == 1;
 
         a.recycle();
     }
@@ -196,7 +198,20 @@ public class FABToolbarLayout extends RelativeLayout {
                                 toolbarLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                             }
 
+                            int[] fabP = new int[2];
+                            fab.getLocationOnScreen(fabP);
+                            fabPos.set(fabP[0], fabP[1]);
                             fab.setVisibility(VISIBLE);
+                            if (showToolBarByDefault) {
+                                fab.setTranslationX(getDestFabTranslationXForToolbar());
+                                fabContainer.setTranslationY(getDestFabContainerTranslationYForToolbar());
+                                float destScale = getDestFabScaleForToolbar();
+                                fab.setScaleX(destScale);
+                                fab.setScaleY(destScale);
+                                if (fabDrawableAnimationEnabled) {
+                                    fabDrawable.startTransition(0); // fully animate the drawable
+                                }
+                            }
                         }
                     });
 
@@ -213,8 +228,15 @@ public class FABToolbarLayout extends RelativeLayout {
 
                     fabContainer.setLayoutParams(fabContainerParams);
 
-                    toolbarLayout.setVisibility(INVISIBLE);
-                    toolbarLayout.setAlpha(0f);
+                    if (showToolBarByDefault) {
+                        toolbarLayout.setVisibility(VISIBLE);
+                        toolbarLayout.setAlpha(1f);
+                        isToolbar = true;
+                        isFab = false;
+                    } else {
+                        toolbarLayout.setVisibility(INVISIBLE);
+                        toolbarLayout.setAlpha(0f);
+                    }
                 }
             }
         });
@@ -229,6 +251,7 @@ public class FABToolbarLayout extends RelativeLayout {
                         fab.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                     }
 
+                    originalFABSize = fab.getWidth();
                     fabSize.set(fab.getWidth(), fab.getHeight());
 
                     RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) fab.getLayoutParams();
@@ -255,7 +278,7 @@ public class FABToolbarLayout extends RelativeLayout {
 
         fab.setLayerType(LAYER_TYPE_SOFTWARE, null);
 
-        setClipChildren(false);
+        setClipChildren(showToolBarByDefault);
 
         isInit = false;
     }
@@ -278,17 +301,8 @@ public class FABToolbarLayout extends RelativeLayout {
 
 
         // TRANSLATION ANIM
-        int xDest = toolbarPos.x + (toolbarSize.x - fabSize.x) / 2;
-
-
-        int[] fabConPos = new int[2];
-        fabContainer.getLocationOnScreen(fabConPos);
-
-        int xDelta = xDest - fabPos.x;
-        final int yDelta = toolbarPos.y - fabConPos[1];
-
-        ObjectAnimator xAnim = ObjectAnimator.ofFloat(fab, "translationX", fab.getTranslationX(), fab.getTranslationX() + xDelta);
-        ObjectAnimator yAnim = ObjectAnimator.ofFloat(fabContainer, "translationY", fabContainer.getTranslationY(), fabContainer.getTranslationY() + yDelta);
+        ObjectAnimator xAnim = ObjectAnimator.ofFloat(fab, "translationX", fab.getTranslationX(), getDestFabTranslationXForToolbar());
+        ObjectAnimator yAnim = ObjectAnimator.ofFloat(fabContainer, "translationY", fabContainer.getTranslationY(), getDestFabContainerTranslationYForToolbar());
 
         xAnim.setInterpolator(new AccelerateInterpolator());
         yAnim.setInterpolator(new DecelerateInterpolator(3f));
@@ -304,7 +318,7 @@ public class FABToolbarLayout extends RelativeLayout {
         if (fabDrawable != null && fabDrawableAnimationEnabled) {
             fabDrawable.startTransition(SHOW_ANIM_DURATION / 3);
         }
-        if(!fabDrawableAnimationEnabled) {
+        if (!fabDrawableAnimationEnabled) {
             fab.setImageDrawable(null);
         }
 
@@ -312,9 +326,7 @@ public class FABToolbarLayout extends RelativeLayout {
         // SIZE ANIM
         // real size is 55x55 instead of 84x98
         final int startRadius = fabSize.x / 2;
-        int finalRadius = (int)(Math.sqrt(Math.pow(toolbarSize.x, 2) + Math.pow(toolbarSize.y, 2))/2);
-        int realRadius = (int)(98f * finalRadius / 55f);
-        final ValueAnimator sizeAnim = ValueAnimator.ofFloat(startRadius, realRadius);
+        final ValueAnimator sizeAnim = ValueAnimator.ofFloat(startRadius, getExpandedFabRadius());
         sizeAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
@@ -366,19 +378,8 @@ public class FABToolbarLayout extends RelativeLayout {
 
 
         // REVERSE TRANSLATION ANIM
-        int xSource = toolbarPos.x + (toolbarSize.x - originalFABSize) / 2;
-        int distanceVertical = (toolbarSize.y - fab.getHeight())/2;
-        int verticalMarginToSet = VERTICAL_MARGIN - distanceVertical;
-        int yDest = toolbarPos.y - verticalMarginToSet;
-
-        int[] fabConPos = new int[2];
-        fabContainer.getLocationOnScreen(fabConPos);
-
-        int xDelta = fabPos.x - xSource;
-        final int yDelta = yDest - fabConPos[1];
-
-        ObjectAnimator xAnimR = ObjectAnimator.ofFloat(fab, "translationX", fab.getTranslationX(), fab.getTranslationX() + xDelta);
-        ObjectAnimator yAnimR = ObjectAnimator.ofFloat(fabContainer, "translationY", fabContainer.getTranslationY(), fabContainer.getTranslationY() + yDelta);
+        ObjectAnimator xAnimR = ObjectAnimator.ofFloat(fab, "translationX", fab.getTranslationX(), getDestFabTranslationXForFab());
+        ObjectAnimator yAnimR = ObjectAnimator.ofFloat(fabContainer, "translationY", fabContainer.getTranslationY(), getDestFabContainerTranslationYForFab());
 
         xAnimR.setInterpolator(new DecelerateInterpolator());
         yAnimR.setInterpolator(new AccelerateInterpolator());
@@ -413,9 +414,7 @@ public class FABToolbarLayout extends RelativeLayout {
         // REVERSE SIZE ANIM
         // real size is 55x55 instead of 84x98
         final int startRadius = originalToolbarSize / 2;
-        int finalRadius = (int)(Math.sqrt(Math.pow(toolbarSize.x, 2) + Math.pow(toolbarSize.y, 2))/2);
-        int realRadius = (int)(98f * finalRadius / 55f);
-        final ValueAnimator sizeAnimR = ValueAnimator.ofFloat(realRadius, startRadius);
+        final ValueAnimator sizeAnimR = ValueAnimator.ofFloat(getExpandedFabRadius(), startRadius);
         sizeAnimR.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
@@ -451,6 +450,42 @@ public class FABToolbarLayout extends RelativeLayout {
         });
 
         animatorSet.start();
+    }
+
+    private float getDestFabTranslationXForToolbar() {
+        return fab.getTranslationX() + ((toolbarPos.x + (toolbarSize.x - fabSize.x) / 2) - fabPos.x);
+    }
+
+    private float getDestFabContainerTranslationYForToolbar() {
+        int[] fabConPos = new int[2];
+
+        fabContainer.getLocationOnScreen(fabConPos);
+        final int yDelta = toolbarPos.y - fabConPos[1];
+        return fabContainer.getTranslationY() + yDelta;
+    }
+
+    private float getDestFabTranslationXForFab() {
+        return fab.getTranslationX() + (fabPos.x - (toolbarPos.x + (toolbarSize.x - originalFABSize) / 2));
+    }
+
+    private float getDestFabContainerTranslationYForFab() {
+        int distanceVertical = (toolbarSize.y - fab.getHeight()) / 2;
+        int verticalMarginToSet = VERTICAL_MARGIN - distanceVertical;
+        int yDest = toolbarPos.y - verticalMarginToSet;
+        int[] fabConPos = new int[2];
+
+        fabContainer.getLocationOnScreen(fabConPos);
+        final int yDelta = yDest - fabConPos[1];
+        return fabContainer.getTranslationY() + yDelta;
+    }
+
+    private float getDestFabScaleForToolbar() {
+        return getExpandedFabRadius() / (fabSize.x / 2);
+    }
+
+    private int getExpandedFabRadius() {
+        int finalRadius = (int) (Math.sqrt(Math.pow(toolbarSize.x, 2) + Math.pow(toolbarSize.y, 2)) / 2);
+        return (int) (98f * finalRadius / 55f);
     }
 
     public boolean isFab() {
