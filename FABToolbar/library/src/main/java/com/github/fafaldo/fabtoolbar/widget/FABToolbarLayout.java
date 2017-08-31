@@ -288,7 +288,7 @@ public class FABToolbarLayout extends RelativeLayout {
         final int yDelta = toolbarPos.y - fabConPos[1];
 
         ObjectAnimator xAnim = ObjectAnimator.ofFloat(fab, "translationX", fab.getTranslationX(), fab.getTranslationX() + xDelta);
-        ObjectAnimator yAnim = ObjectAnimator.ofFloat(fabContainer, "translationY", fabContainer.getTranslationY(), fabContainer.getTranslationY() + yDelta);
+        ObjectAnimator yAnim = ObjectAnimator.ofFloat(fabContainer, "translationY", fabContainer.getTranslationY(), animationValueY(yDelta));
 
         xAnim.setInterpolator(new AccelerateInterpolator());
         yAnim.setInterpolator(new DecelerateInterpolator(3f));
@@ -467,5 +467,16 @@ public class FABToolbarLayout extends RelativeLayout {
 
     public void setFabDrawableAnimationEnabled(boolean fabDrawableAnimationEnabled) {
         this.fabDrawableAnimationEnabled = fabDrawableAnimationEnabled;
+    }
+
+    private float animationValueY(int yDelta)
+    {
+        RelativeLayout.LayoutParams fabParams = (RelativeLayout.LayoutParams) fabContainer.getLayoutParams();
+
+        if(fabParams.getRules()[ALIGN_PARENT_TOP] == RelativeLayout.TRUE) {
+            return fabContainer.getTranslationY() - yDelta;
+        } else {
+            return fabContainer.getTranslationY() + yDelta;
+        }
     }
 }
